@@ -1,6 +1,8 @@
 package com.rz.crashreport;
 
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -19,16 +21,16 @@ public class OkhttpUtils {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static final String SDK_VERSION = "AndroidCrashReportSdkVersion/";
     private static final String SEPARATE = ";";
-    public static final String LOG_PATH = "https://data-center-dev.duobeiyun.com/tosee/v1/crash";
+    public static  String UPLOAD_PATH = "https://data-center-dev.duobeiyun.com/tosee/v1/crash";
 
 
 
     private OkhttpUtils() {
         mOkHttpClient = new OkHttpClient.Builder()
                 .retryOnConnectionFailure(true)//允许失败重试
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
     }
 
@@ -44,6 +46,7 @@ public class OkhttpUtils {
     }
 
     public boolean postSynJson(String url, String json) {
+        Log.e("post_url",url);
         boolean success = false;
         RequestBody body = RequestBody.create(JSON, json);
         final Request request = new Request.Builder()

@@ -27,6 +27,8 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 
+import java.util.HashMap;
+
 /**
  * xCrash is a crash reporting library for Android APP.
  */
@@ -61,7 +63,7 @@ public final class XCrash {
      *
      * <p>Note: This is a synchronous operation.
      *
-     * @param ctx The context of the application object of the current process.
+     * @param ctx    The context of the application object of the current process.
      * @param params An initialization parameter set.
      * @return Return zero if successful, non-zero otherwise. The error code is defined in:
      * {@link Errno}.
@@ -87,6 +89,9 @@ public final class XCrash {
         if (params == null) {
             params = new InitParameters();
         }
+
+        //set url
+        OkhttpUtils.UPLOAD_PATH = params.getUploadUrl();
 
         //set logger
         if (params.logger != null) {
@@ -126,7 +131,7 @@ public final class XCrash {
             }
         }
         //use default crashcallbackimpl
-        ICrashCallback crashCallback=new DefaultICrashCallbackImpl(ctx);
+        ICrashCallback crashCallback = new DefaultICrashCallbackImpl(ctx);
         //init file manager
         FileManager.getInstance().initialize(
                 params.logDir,
@@ -216,7 +221,6 @@ public final class XCrash {
 
         //maintain tombstone and placeholder files in a background thread with some delay
         FileManager.getInstance().maintain();
-
         return r;
     }
 
@@ -226,11 +230,11 @@ public final class XCrash {
     public static class InitParameters {
 
         //common
-        String     appVersion             = null;
-        String     logDir                 = null;
-        int        logFileMaintainDelayMs = 5000;
-        ILogger    logger                 = null;
-        ILibLoader libLoader              = null;
+        String appVersion = null;
+        String logDir = null;
+        int logFileMaintainDelayMs = 5000;
+        ILogger logger = null;
+        ILibLoader libLoader = null;
 
         /**
          * Set App version. You can use this method to set an internal test/gray version number.
@@ -294,7 +298,7 @@ public final class XCrash {
 
         //placeholder
         int placeholderCountMax = 0;
-        int placeholderSizeKb   = 128;
+        int placeholderSizeKb = 128;
 
         /**
          * Set the maximum number of placeholder files in the log directory. (Default: 0)
@@ -323,17 +327,17 @@ public final class XCrash {
         }
 
         //java crash
-        boolean        enableJavaCrashHandler      = true;
-        boolean        javaRethrow                 = true;
-        int            javaLogCountMax             = 10;
-        int            javaLogcatSystemLines       = 50;
-        int            javaLogcatEventsLines       = 50;
-        int            javaLogcatMainLines         = 200;
-        boolean        javaDumpFds                 = true;
-        boolean        javaDumpNetworkInfo         = true;
-        boolean        javaDumpAllThreads          = true;
-        int            javaDumpAllThreadsCountMax  = 0;
-        String[]       javaDumpAllThreadsWhiteList = null;
+        boolean enableJavaCrashHandler = true;
+        boolean javaRethrow = true;
+        int javaLogCountMax = 10;
+        int javaLogcatSystemLines = 50;
+        int javaLogcatEventsLines = 50;
+        int javaLogcatMainLines = 200;
+        boolean javaDumpFds = true;
+        boolean javaDumpNetworkInfo = true;
+        boolean javaDumpAllThreads = true;
+        int javaDumpAllThreadsCountMax = 0;
+        String[] javaDumpAllThreadsWhiteList = null;
 
         /**
          * Enable the Java exception capture feature. (Default: enable)
@@ -486,19 +490,19 @@ public final class XCrash {
         }
 
         //native crash
-        boolean        enableNativeCrashHandler      = true;
-        boolean        nativeRethrow                 = true;
-        int            nativeLogCountMax             = 10;
-        int            nativeLogcatSystemLines       = 50;
-        int            nativeLogcatEventsLines       = 50;
-        int            nativeLogcatMainLines         = 200;
-        boolean        nativeDumpElfHash             = true;
-        boolean        nativeDumpMap                 = true;
-        boolean        nativeDumpFds                 = true;
-        boolean        nativeDumpNetworkInfo         = true;
-        boolean        nativeDumpAllThreads          = true;
-        int            nativeDumpAllThreadsCountMax  = 0;
-        String[]       nativeDumpAllThreadsWhiteList = null;
+        boolean enableNativeCrashHandler = true;
+        boolean nativeRethrow = true;
+        int nativeLogCountMax = 10;
+        int nativeLogcatSystemLines = 50;
+        int nativeLogcatEventsLines = 50;
+        int nativeLogcatMainLines = 200;
+        boolean nativeDumpElfHash = true;
+        boolean nativeDumpMap = true;
+        boolean nativeDumpFds = true;
+        boolean nativeDumpNetworkInfo = true;
+        boolean nativeDumpAllThreads = true;
+        int nativeDumpAllThreadsCountMax = 0;
+        String[] nativeDumpAllThreadsWhiteList = null;
 
         /**
          * Enable the native crash capture feature. (Default: enable)
@@ -680,15 +684,15 @@ public final class XCrash {
 
 
         //anr
-        boolean        enableAnrHandler     = true;
-        boolean        anrRethrow           = true;
-        boolean        anrCheckProcessState = true;
-        int            anrLogCountMax       = 10;
-        int            anrLogcatSystemLines = 50;
-        int            anrLogcatEventsLines = 50;
-        int            anrLogcatMainLines   = 200;
-        boolean        anrDumpFds           = true;
-        boolean        anrDumpNetworkInfo   = true;
+        boolean enableAnrHandler = true;
+        boolean anrRethrow = true;
+        boolean anrCheckProcessState = true;
+        int anrLogCountMax = 10;
+        int anrLogcatSystemLines = 50;
+        int anrLogcatEventsLines = 50;
+        int anrLogcatMainLines = 200;
+        boolean anrDumpFds = true;
+        boolean anrDumpNetworkInfo = true;
 
         /**
          * Enable the ANR capture feature. (Default: enable)
@@ -815,7 +819,19 @@ public final class XCrash {
             return this;
         }
 
+        //app init
+        String uploadUrl = OkhttpUtils.UPLOAD_PATH;
+
+        public String getUploadUrl() {
+            return uploadUrl;
+        }
+
+        public InitParameters setUploadUrl(String uploadUrl) {
+            this.uploadUrl = uploadUrl;
+            return this;
+        }
     }
+
     public static void testNativeCrash() {
         NativeHandler.getInstance().testNativeCrash(false);
     }
@@ -836,4 +852,13 @@ public final class XCrash {
         return logger;
     }
 
+    private static final HashMap<String, String> extraInfoMap = new HashMap<>();
+
+    public static HashMap<String, String> getExtraInfoMap() {
+        return extraInfoMap;
+    }
+
+    public static void addExtraInfo(String key, String value) {
+        extraInfoMap.put(key, value);
+    }
 }

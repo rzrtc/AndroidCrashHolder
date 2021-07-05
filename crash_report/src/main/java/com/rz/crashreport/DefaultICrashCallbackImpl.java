@@ -37,10 +37,8 @@ class DefaultICrashCallbackImpl implements ICrashCallback {
     public void onCrash(String logPath, String emergency) throws Exception {
         Log.d(TAG, "log path: " + (logPath != null ? logPath : "(null)") + ", emergency: " + (emergency != null ? emergency : "(null)"));
 
-        // 先保证发
-        sendThenDeleteCrashLog(logPath, emergency);
         debug(logPath, emergency);
-
+        sendThenDeleteCrashLog(logPath, emergency);
     }
 
     private void sendThenDeleteCrashLog(String logPath, String emergency) {
@@ -61,7 +59,7 @@ class DefaultICrashCallbackImpl implements ICrashCallback {
             rootJsonObj.put("info", new JSONObject(map).put("crash", true));
             rootJsonObj.put("info", new JSONObject(map).put("crash", true));
 
-            boolean b = OkhttpUtils.getInstance().postSynJson(OkhttpUtils.LOG_PATH, rootJsonObj.toString());
+            boolean b = OkhttpUtils.getInstance().postSynJson(OkhttpUtils.UPLOAD_PATH, rootJsonObj.toString());
             if (b) {
                 Log.e(TAG, "sendThenDeleteCrashLog: success");
                 TombstoneManager.deleteTombstone(logPath);
