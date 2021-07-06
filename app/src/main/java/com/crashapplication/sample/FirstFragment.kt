@@ -36,10 +36,14 @@ class FirstFragment : Fragment() {
 //            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
             XCrash.testJavaCrash()
         }
-        binding.buttonBative.setOnClickListener {
+        binding.buttonNative.setOnClickListener {
 //            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
             XCrash.testNativeCrash()
 
+        }
+        binding.buttonAnr.setOnClickListener {
+//            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+            XCrash.testAnrCrash()
         }
     }
 

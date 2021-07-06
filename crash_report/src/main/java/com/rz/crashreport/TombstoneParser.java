@@ -367,7 +367,7 @@ public class TombstoneParser {
      *
      * <p>Note: This method is generally used in {@link ICrashCallback#onCrash(String, String)}.
      *
-     * @param logPath Absolute path of the crash log file.
+     * @param logPath   Absolute path of the crash log file.
      * @param emergency A buffer that holds basic crash information when disk exhausted.
      * @return The parsed map.
      * @throws IOException If an I/O error occurs.
@@ -702,27 +702,31 @@ public class TombstoneParser {
         }
     }
 
-    public static boolean isDbyCrash(Map<String,String> crashMap) {
-        //todo 检查包名
-        String dbyJavaIdentify = "com.rz";
-        String[] dbyNaticeIdentify = new String[]{"libDbyEngine","libdbyAudioUtil","libdb_capture_utils_lib","libDBYSDK","libxcrash"};
-        if (crashMap==null) {
+    public static boolean shouldPass(Map<String, String> crashMap) {
+
+        if (crashMap == null) {
             return false;
         }
-        if (Objects.equals(crashMap.get(keyCrashType), Util.javaCrashType)) {
-            if (Objects.requireNonNull(crashMap.get(keyJavaStacktrace)).contains(dbyJavaIdentify)) {
-                return true;
-            }
-        }
 
-        if (Objects.equals(crashMap.get(keyCrashType), Util.nativeCrashType)) {
-            for (String s : dbyNaticeIdentify) {
-                if (Objects.requireNonNull(crashMap.get(keyBacktrace)).contains(s)) {
+        if (Objects.equals(crashMap.get(keyCrashType), Util.javaCrashType)) {
+            if (XCrash.javaWhitePackages.isEmpty()) return true;
+            for (String javaWhitePackage : XCrash.javaWhitePackages) {
+                if (Objects.requireNonNull(crashMap.get(keyJavaStacktrace)).contains(javaWhitePackage)) {
                     return true;
                 }
             }
+            return false;
+        } else if (Objects.equals(crashMap.get(keyCrashType), Util.nativeCrashType)) {
+            if (XCrash.nativeIdentifies.isEmpty()) return true;
+            for (String pattern : XCrash.nativeIdentifies) {
+                if (Objects.requireNonNull(crashMap.get(keyBacktrace)).contains(pattern)) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return true;
         }
-        return false;
     }
 
 }

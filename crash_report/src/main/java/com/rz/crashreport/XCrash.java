@@ -25,8 +25,10 @@ package com.rz.crashreport;
 import android.app.Application;
 import android.content.Context;
 import android.os.Build;
+import android.os.SystemClock;
 import android.text.TextUtils;
 
+import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -40,6 +42,9 @@ public final class XCrash {
     private static String appVersion = null;
     private static String logDir = null;
     private static ILogger logger = new DefaultLogger();
+    static HashSet<String> nativeIdentifies = null;
+    static HashSet<String> javaWhitePackages = null;
+
 
     private XCrash() {
     }
@@ -92,7 +97,8 @@ public final class XCrash {
 
         //set url
         OkhttpUtils.UPLOAD_PATH = params.getUploadUrl();
-
+        nativeIdentifies = params.getNativeWhitePackages();
+        javaWhitePackages = params.getJavaWhitePackages();
         //set logger
         if (params.logger != null) {
             XCrash.logger = params.logger;
@@ -821,6 +827,8 @@ public final class XCrash {
 
         //app init
         String uploadUrl = OkhttpUtils.UPLOAD_PATH;
+        HashSet<String> nativeWhitePackages = new HashSet<>();
+        HashSet<String> javaWhitePackages = new HashSet<>();
 
         public String getUploadUrl() {
             return uploadUrl;
@@ -830,6 +838,26 @@ public final class XCrash {
             this.uploadUrl = uploadUrl;
             return this;
         }
+
+        public InitParameters setNativeWhitePackages(HashSet<String> nativeWhitePackages) {
+            this.nativeWhitePackages = nativeWhitePackages;
+            return this;
+        }
+
+        public HashSet<String> getNativeWhitePackages() {
+            return nativeWhitePackages;
+        }
+
+        public HashSet<String> getJavaWhitePackages() {
+            return javaWhitePackages;
+        }
+
+        public InitParameters setJavaWhitePackages(HashSet<String> javaWhitePackages) {
+            this.javaWhitePackages = javaWhitePackages;
+            return this;
+        }
+
+
     }
 
     public static void testNativeCrash() {
@@ -838,6 +866,10 @@ public final class XCrash {
 
     public static void testJavaCrash() {
         throw new RuntimeException("it is XCrash testJavaCrash");
+    }
+
+    public static void testAnrCrash() {
+        SystemClock.sleep(100000);
     }
 
     static String getAppId() {

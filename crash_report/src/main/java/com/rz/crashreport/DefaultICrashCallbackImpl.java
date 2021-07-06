@@ -56,7 +56,7 @@ class DefaultICrashCallbackImpl implements ICrashCallback {
             }
 
             map = TombstoneParser.parse(logPath, emergency);
-            if (!TombstoneParser.isDbyCrash(map)) {
+            if (!TombstoneParser.shouldPass(map)) {
                 Log.e(TAG, "rzCrash_sendThenDeleteCrashLog: no dby crash did`nt send ");
                 TombstoneManager.deleteTombstone(logPath);
                 return;
