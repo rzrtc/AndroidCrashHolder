@@ -836,6 +836,10 @@ public final class XCrash {
         NativeHandler.getInstance().testNativeCrash(false);
     }
 
+    public static void testJavaCrash() {
+        throw new RuntimeException("it is XCrash testJavaCrash");
+    }
+
     static String getAppId() {
         return appId;
     }

@@ -34,7 +34,12 @@ class FirstFragment : Fragment() {
 
         binding.buttonJava.setOnClickListener {
 //            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+            XCrash.testJavaCrash()
+        }
+        binding.buttonBative.setOnClickListener {
+//            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
             XCrash.testNativeCrash()
+
         }
     }
 
