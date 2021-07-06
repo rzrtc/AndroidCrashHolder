@@ -27,7 +27,7 @@ import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * xCrash is a crash reporting library for Android APP.
@@ -852,13 +852,17 @@ public final class XCrash {
         return logger;
     }
 
-    private static final HashMap<String, String> extraInfoMap = new HashMap<>();
+    private static final ConcurrentHashMap<String, String> extraInfoMap = new ConcurrentHashMap<>();
 
-    public static HashMap<String, String> getExtraInfoMap() {
+    public static ConcurrentHashMap<String, String> getExtraInfoMap() {
         return extraInfoMap;
     }
 
     public static void addExtraInfo(String key, String value) {
         extraInfoMap.put(key, value);
+    }
+
+    public static String removeExtraInfo(String key, String value) {
+        return extraInfoMap.remove(key);
     }
 }

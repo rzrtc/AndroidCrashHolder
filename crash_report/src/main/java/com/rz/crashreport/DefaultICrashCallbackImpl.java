@@ -48,6 +48,13 @@ class DefaultICrashCallbackImpl implements ICrashCallback {
             TombstoneManager.appendSection(logPath, "devices_serialNo", serialNo());
 //            TombstoneManager.appendSection(logPath, "login_param", serialNo());
 
+            //添加业务接口
+            if (XCrash.getExtraInfoMap().size()>0) {
+                for (Map.Entry<String, String> item : XCrash.getExtraInfoMap().entrySet()) {
+                    TombstoneManager.appendSection(logPath, item.getKey(), item.getValue());
+                }
+            }
+
             map = TombstoneParser.parse(logPath, emergency);
             if (!TombstoneParser.isDbyCrash(map)) {
                 Log.e(TAG, "rzCrash_sendThenDeleteCrashLog: no dby crash did`nt send ");
