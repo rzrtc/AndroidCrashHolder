@@ -285,7 +285,7 @@ class Util {
         DateFormat timeFormatter = new SimpleDateFormat(Util.timeFormatterStr, Locale.US);
 
         return Util.sepHead + "\n"
-                + "crashReportVersion: '" + Version.fullVersion + "'\n"
+                + "crashReportVersion: '" + BuildConfig.VERSION_NAME + "'\n"
                 + "Crash type: '" + crashType + "'\n"
                 + "Start time: '" + timeFormatter.format(startTime) + "'\n"
                 + "Crash time: '" + timeFormatter.format(crashTime) + "'\n"

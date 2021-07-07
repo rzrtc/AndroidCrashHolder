@@ -483,7 +483,7 @@ public class TombstoneParser {
         }
 
         if (TextUtils.isEmpty(map.get(keyTombstoneMaker))) {
-            map.put(keyTombstoneMaker, Version.fullVersion);
+            map.put(keyTombstoneMaker, BuildConfig.VERSION_NAME);
         }
 
         if (TextUtils.isEmpty(map.get(keyRooted))) {

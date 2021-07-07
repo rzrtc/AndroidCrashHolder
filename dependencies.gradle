@@ -3,6 +3,6 @@
  * 统一管理多个模块下的导入配置，便于管理
  */
 ext {
-    set_sdk_versionCode = 1
-    set_sdk_versionName = "1.0.0"
+    set_sdk_versionCode = 3
+    set_sdk_versionName = "1.2.0"
 }

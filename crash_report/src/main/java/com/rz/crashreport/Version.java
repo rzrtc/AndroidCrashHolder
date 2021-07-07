@@ -28,5 +28,5 @@ class Version {
     }
 
     static final String version = "1.0.0";
-    static final String fullVersion = "rashReport " + version;
+    static final String fullVersion = "crashReport " + version;
 }
