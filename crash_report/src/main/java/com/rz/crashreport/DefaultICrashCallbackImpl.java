@@ -3,11 +3,17 @@ package com.rz.crashreport;
 import android.content.Context;
 import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 import static com.rz.crashreport.DevicePropertiesKt.serialNo;
 
@@ -66,11 +72,21 @@ class DefaultICrashCallbackImpl implements ICrashCallback {
             rootJsonObj.put("info", new JSONObject(map).put("crash", true));
             rootJsonObj.put("info", new JSONObject(map).put("crash", true));
 
-            boolean b = OkhttpUtils.getInstance().postSynJson(OkhttpUtils.UPLOAD_PATH, rootJsonObj.toString());
-            if (b) {
-                Log.e(TAG, "sendThenDeleteCrashLog: success");
-                TombstoneManager.deleteTombstone(logPath);
-            }
+            OkhttpUtils.getInstance().postAsyncJson(OkhttpUtils.UPLOAD_PATH, rootJsonObj.toString(), new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.isSuccessful()){
+                        Log.e(TAG, "sendThenDeleteCrashLog: success");
+                        TombstoneManager.deleteTombstone(logPath);
+                    }
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -3,9 +3,13 @@ package com.rz.crashreport;
 
 import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -60,6 +64,21 @@ public class OkhttpUtils {
             success = false;
         }
         return success;
+    }
+
+    public void postAsyncJson(String url, String json, Callback callback) {
+        Log.e("post_url",url);
+
+        RequestBody body = RequestBody.create(JSON, json);
+        final Request request = new Request.Builder()
+                .removeHeader(USER_AGENT).addHeader(USER_AGENT, getUserAgent())
+                .url(url).post(body).build();
+        try {
+             mOkHttpClient.newCall(request).enqueue(callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public boolean  postLog(String url, String logStr) {
